@@ -4,6 +4,7 @@ exports.up = function(knex) {
     .createTable('size', (table) => {
       table.increments();
       table.string('size').notNullable();
+      table.integer('price_id').references('id').inTable('price')
       table.timestamps(true, true);
     })
 };

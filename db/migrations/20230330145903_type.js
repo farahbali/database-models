@@ -6,7 +6,8 @@ exports.up = function(knex) {
       table.string('type').notNullable();
       table.string('image');
       table.string('description');
-      table.integer('product_id').references('id').inTable('product')
+      table.integer('price_id').references('id').inTable('price');
+      table.integer('product_id').references('id').inTable('product');
       table.timestamps(true, true);
     })
 };

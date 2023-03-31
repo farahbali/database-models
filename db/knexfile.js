@@ -6,9 +6,9 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: 'objection_tutorial',
-      user: 'jgoebel',
-      password: null,
+      database:'buildzone_database',
+      user: 'postgres',
+      password:"farah",
     },
     pool: {
       min: 2,
