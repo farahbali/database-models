@@ -34,5 +34,4 @@ class Product extends Model {
     };
   }
 }
-
 module.exports = Product;

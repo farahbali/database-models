@@ -17,34 +17,52 @@ class UserController {
   }
   async getAllProducts(req,res,next) {
     try {
-      const products = await Product.query({
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
-        include: [
-          {
-            model: Type,
-            attributes: ['name'],
-            through: { attributes: [] } // to exclude the join table from the result
-          }
-        ]
-      });
+      const products = await Product.query()
+      .select('name','description','image','exclude_extra')
       res.json(products);
     } catch (error) {
       next(error);
     }
   }
-  async getAllTypes(req, res, next) {
+  async getAllSizePrice(req,res,next) {
     try {
-      const types = await Type.query()
-      .join('product', 'type.product_id', 'product.id')
-      .join('price', 'type.price_id', 'price.id')
-      .join('product_size','product_size.product_id','product.id')
-      .join('size','size.id','product_size.size_id')
-      .select('type.*', 'product.*','price.*','size.*')
-      res.json(types);
+      const sizes = await Size.query().select('size').withGraphJoined('price')
+      .modifyGraph('price', builder => {
+        builder.select('price');
+      })
+      res.json(sizes);
     } catch (error) {
-      throw error;
+      next(error);
     }
-  }  
+  }
+  async getProductById(req,res,next) {
+    try {
+      const product = await Product.query()
+      .findById(req.params.id)
+      .withGraphJoined('types')
+      .withGraphJoined('types.price')
+      .select('name')
+      .modifyGraph('types', builder => {
+        builder.select('type', 'image', 'description');
+      })
+      .modifyGraph('types.price', builder => {
+        builder.select('price');
+      });
+    res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getAllTypes(req, res, next) {
+   const types=await Type.query().select('type','description','image').withGraphJoined('price')
+   .modifyGraph('price', builder => {
+    builder.select('price')
+  })
+   res.json(types);
+    } catch (error) {
+      next(error);
+    }
+   
 }
 
 module.exports = new UserController();

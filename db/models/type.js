@@ -27,5 +27,4 @@ class Type extends Model {
     };
   }
 }
-console.log(Type.relationMappings);
 module.exports = Type;
